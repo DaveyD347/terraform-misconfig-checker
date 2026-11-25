@@ -1,0 +1,22 @@
+# Copy to .tfcheck.toml in your repository root (or pass --config).
+# Every setting is optional. Command line flags add to these.
+
+# Exit 1 when unsuppressed findings at or above this severity remain ("none" never fails).
+fail_on = "high"
+
+# Hide findings below this severity.
+min_severity = "low"
+
+# Rules to turn off everywhere.
+skip_rules = ["AWS-S3-004"]
+
+# Run only these rules (empty = all).
+only_rules = []
+
+# Directory names or glob patterns to skip.
+exclude_paths = ["examples", "**/sandbox/**"]
+
+# Raise or lower the severity of specific rules for your organisation.
+[severity_overrides]
+"AWS-EC2-003" = "high"
+"AZ-KV-001" = "medium"

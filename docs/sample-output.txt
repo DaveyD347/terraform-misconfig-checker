@@ -1,0 +1,103 @@
+examples/insecure/aws/main.tf
+     25  MEDIUM   AWS-S3-002        aws_s3_bucket.assets
+         S3 bucket is not covered by a full public access block: Public access block aws_s3_bucket_public_access_block.assets leaves block_public_acls, block_public_policy disabled
+     25  LOW      AWS-S3-004        aws_s3_bucket.assets
+         S3 bucket versioning is not enabled: Versioning is not enabled for this bucket
+     32  HIGH     AWS-S3-001        aws_s3_bucket_acl.assets
+         S3 bucket ACL grants public access: Bucket ACL is "public-read"
+     45  HIGH     AWS-S3-003        aws_s3_bucket_policy.assets
+         S3 bucket policy allows access from any principal: Statement allows s3:GetObject to Principal "*" with no condition
+     57  MEDIUM   AWS-S3-002        aws_s3_bucket.logs
+         S3 bucket is not covered by a full public access block: No aws_s3_bucket_public_access_block is attached to this bucket
+     57  LOW      AWS-S3-004        aws_s3_bucket.logs
+         S3 bucket versioning is not enabled: Versioning is not enabled for this bucket
+     61  MEDIUM   AWS-EC2-002       aws_ebs_volume.data
+         EBS storage is not encrypted: Volume is not encrypted
+     74  HIGH     AWS-EC2-001       aws_security_group.web
+         Security group allows ingress from the internet to sensitive ports: Ingress from 0.0.0.0/0 to 22 (SSH)
+     96  HIGH     AWS-EC2-001       aws_security_group_rule.bastion_ssh
+         Security group allows ingress from the internet to sensitive ports: Ingress from 0.0.0.0/0 to 22 (SSH)
+    101  CRITICAL AWS-EC2-001       aws_vpc_security_group_ingress_rule.debug_everything
+         Security group allows ingress from the internet to sensitive ports: Ingress from ::/0 to all ports
+    108  HIGH     AWS-EC2-001       aws_security_group.db
+         Security group allows ingress from the internet to sensitive ports: Ingress from 0.0.0.0/0 to 5432 (PostgreSQL)
+    119  MEDIUM   AWS-EC2-003       aws_instance.web
+         Instance metadata service allows IMDSv1: http_tokens is "optional"
+    122  LOW      AWS-EC2-004       aws_instance.web
+         Instance gets a public IP address: associate_public_ip_address is true
+    125  MEDIUM   AWS-EC2-002       aws_instance.web
+         EBS storage is not encrypted: Root block device is not encrypted
+    143  HIGH     AWS-RDS-002       aws_db_instance.main
+         RDS instance is publicly accessible: publicly_accessible is true
+    144  HIGH     AWS-RDS-001       aws_db_instance.main
+         RDS storage is not encrypted: storage_encrypted is not true
+    145  MEDIUM   AWS-RDS-003       aws_db_instance.main
+         RDS automated backups are disabled: backup_retention_period is 0
+    163  CRITICAL AWS-IAM-004       aws_iam_role.ci
+         IAM role can be assumed by any principal: Trust policy allows Principal "*" without a condition
+    168  HIGH     AWS-IAM-003       aws_iam_role_policy_attachment.ci_admin
+         AdministratorAccess managed policy is attached: Attaches arn:aws:iam::aws:policy/AdministratorAccess
+    173  CRITICAL AWS-IAM-001       aws_iam_policy.deployer
+         IAM policy grants full administrator access: Statement allows Action "*" on Resource "*"
+    173  MEDIUM   AWS-IAM-002       aws_iam_policy.deployer
+         IAM policy uses service-wide wildcard actions: Statement allows s3:*
+    190  LOW      AWS-IAM-005       aws_iam_user_policy_attachment.bob
+         IAM policy is attached directly to a user: Policy is attached to an IAM user instead of a group or role
+    197  MEDIUM   AWS-KMS-001       aws_kms_key.app
+         KMS key rotation is disabled: enable_key_rotation is not true
+    201  MEDIUM   AWS-CT-001        aws_cloudtrail.main
+         CloudTrail trail is not multi-region: is_multi_region_trail is not true
+    201  MEDIUM   AWS-CT-002        aws_cloudtrail.main
+         CloudTrail log file validation is disabled: enable_log_file_validation is not true
+    201  LOW      AWS-CT-003        aws_cloudtrail.main
+         CloudTrail logs are not encrypted with a KMS key: kms_key_id is not set
+    211  MEDIUM   AWS-ELB-001       aws_lb_listener.http
+         Load balancer listener serves plain HTTP: HTTP listener does not redirect to HTTPS
+    223  MEDIUM   AWS-ELB-002       aws_lb_listener.https
+         Load balancer listener allows TLS 1.0 or 1.1: ssl_policy ELBSecurityPolicy-2016-08 allows TLS 1.0/1.1
+    236  HIGH     AWS-EKS-001       aws_eks_cluster.main
+         EKS API endpoint is open to the internet: Public endpoint accepts connections from 0.0.0.0/0
+    249  LOW      AWS-SQS-001       aws_sqs_queue.jobs
+         SQS queue encryption is disabled: sqs_managed_sse_enabled is false and no KMS key is set
+
+examples/insecure/azure/main.tf
+     25  HIGH     AZ-STORAGE-001    azurerm_storage_account.exports
+         Storage account allows public blob containers: allow_nested_items_to_be_public is true
+     26  HIGH     AZ-STORAGE-002    azurerm_storage_account.exports
+         Storage account accepts plain HTTP: https_traffic_only_enabled is false
+     27  MEDIUM   AZ-STORAGE-003    azurerm_storage_account.exports
+         Storage account allows TLS versions older than 1.2: min_tls_version is TLS1_0
+     35  HIGH     AZ-NET-001        azurerm_network_security_group.vm
+         Network security group allows inbound internet traffic to sensitive ports: Rule "allow-rdp" allows inbound from * to 3389 (RDP)
+     68  CRITICAL AZ-NET-001        azurerm_network_security_rule.any_any
+         Network security group allows inbound internet traffic to sensitive ports: Rule "temp-allow-all" allows inbound from 0.0.0.0/0 to all ports
+     91  HIGH     AZ-SQL-001        azurerm_mssql_firewall_rule.everyone
+         Database firewall rule allows the entire internet: Firewall rule covers 0.0.0.0 - 255.255.255.255
+     97  LOW      AZ-KV-001         azurerm_key_vault.main
+         Key Vault purge protection is disabled: purge_protection_enabled is not true
+
+examples/insecure/gcp/main.tf
+     15  LOW      GCP-STORAGE-002   google_storage_bucket.public_site
+         Cloud Storage bucket does not use uniform bucket-level access: uniform_bucket_level_access is not true
+     23  HIGH     GCP-STORAGE-001   google_storage_bucket_iam_member.public_read
+         Cloud Storage bucket is publicly accessible: Grants roles/storage.objectViewer to allUsers
+     30  HIGH     GCP-NET-001       google_compute_firewall.ssh
+         Firewall rule allows internet traffic to sensitive ports: Allows tcp from 0.0.0.0/0 to 22 (SSH)
+     56  MEDIUM   GCP-SQL-002       google_sql_database_instance.main
+         Cloud SQL instance does not require SSL: Public IP is enabled and SSL is not enforced
+     59  HIGH     GCP-SQL-001       google_sql_database_instance.main
+         Cloud SQL instance is open to the internet: Authorized network 0.0.0.0/0 allows the whole internet
+     69  MEDIUM   GCP-IAM-002       google_project_iam_member.contractor
+         Primitive owner or editor role is granted: Grants roles/editor
+     88  MEDIUM   GCP-COMPUTE-001   google_compute_instance.worker
+         Instance uses the default service account with full API access: Default service account with the cloud-platform scope
+
+examples/plan/tfplan.json
+      -  CRITICAL AWS-IAM-001       aws_iam_policy.etl
+         IAM policy grants full administrator access: Statement allows Action "*" on Resource "*"
+      -  HIGH     AWS-EC2-001       module.app.aws_security_group.this[0]
+         Security group allows ingress from the internet to sensitive ports: Ingress from 0.0.0.0/0 to 3389 (RDP)
+      -  MEDIUM   AWS-S3-002        aws_s3_bucket.reports
+         S3 bucket is not covered by a full public access block: Public access block aws_s3_bucket_public_access_block.reports leaves restrict_public_buckets disabled
+
+47 findings (5 critical, 17 high, 17 medium, 8 low) in 44 resources across 4 modules, 1 suppressed

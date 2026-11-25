@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: windows-latest
+            python: "3.13"
+          - os: macos-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check .
+
+  action-secure:
+    name: Action passes on hardened Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: scan
+        uses: ./
+        with:
+          path: examples/secure
+          fail-on: low
+      - name: Expect zero findings
+        run: test "${{ steps.scan.outputs.findings }}" = "0"
+
+  action-insecure:
+    name: Action catches insecure Terraform and plans
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: scan
+        uses: ./
+        with:
+          path: examples/insecure, examples/plan/tfplan.json
+          fail-on: none
+      - name: Expect findings from source and plan
+        env:
+          CRITICAL: ${{ steps.scan.outputs.critical }}
+          TOTAL: ${{ steps.scan.outputs.findings }}
+        run: |
+          echo "critical=$CRITICAL total=$TOTAL"
+          test "$CRITICAL" -ge 5
+          test "$TOTAL" -ge 45
+          grep -q '"uri": "examples/insecure/aws/main.tf"' tfcheck-results.sarif
+          grep -q 'module.app.aws_security_group.this\[0\]' tfcheck-results.sarif
+
+      - id: gate
+        name: Gate should fail on critical findings
+        continue-on-error: true
+        uses: ./
+        with:
+          path: examples/insecure/aws
+          fail-on: critical
+      - name: Expect the gate to have failed
+        run: test "${{ steps.gate.outcome }}" = "failure"

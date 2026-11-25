@@ -1,0 +1,2902 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "tfcheck",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/DaveyD347/terraform-misconfig-checker",
+          "rules": [
+            {
+              "id": "AWS-CACHE-001",
+              "name": "ElasticacheReplicationGroupDoesNotEncryptTrafficInTransit",
+              "shortDescription": {
+                "text": "ElastiCache replication group does not encrypt traffic in transit"
+              },
+              "fullDescription": {
+                "text": "Without in-transit encryption, Redis traffic including AUTH tokens and cached data crosses the network in clear text."
+              },
+              "help": {
+                "text": "Without in-transit encryption, Redis traffic including AUTH tokens and cached data crosses the network in clear text.\n\nRemediation:\ntransit_encryption_enabled = true",
+                "markdown": "Without in-transit encryption, Redis traffic including AUTH tokens and cached data crosses the network in clear text.\n\n**Remediation**\n\n```hcl\ntransit_encryption_enabled = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-cache-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-CT-001",
+              "name": "CloudtrailTrailIsNotMultiRegion",
+              "shortDescription": {
+                "text": "CloudTrail trail is not multi-region"
+              },
+              "fullDescription": {
+                "text": "A single-region trail misses API activity in every other region, which is exactly where an attacker would spin up resources."
+              },
+              "help": {
+                "text": "A single-region trail misses API activity in every other region, which is exactly where an attacker would spin up resources.\n\nRemediation:\nis_multi_region_trail = true",
+                "markdown": "A single-region trail misses API activity in every other region, which is exactly where an attacker would spin up resources.\n\n**Remediation**\n\n```hcl\nis_multi_region_trail = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ct-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "logging"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-CT-002",
+              "name": "CloudtrailLogFileValidationIsDisabled",
+              "shortDescription": {
+                "text": "CloudTrail log file validation is disabled"
+              },
+              "fullDescription": {
+                "text": "Log file validation produces signed digest files, so tampering with or deleting log files can be detected."
+              },
+              "help": {
+                "text": "Log file validation produces signed digest files, so tampering with or deleting log files can be detected.\n\nRemediation:\nenable_log_file_validation = true",
+                "markdown": "Log file validation produces signed digest files, so tampering with or deleting log files can be detected.\n\n**Remediation**\n\n```hcl\nenable_log_file_validation = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ct-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "logging"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-CT-003",
+              "name": "CloudtrailLogsAreNotEncryptedWithAKmsKey",
+              "shortDescription": {
+                "text": "CloudTrail logs are not encrypted with a KMS key"
+              },
+              "fullDescription": {
+                "text": "Encrypting trail logs with a customer managed KMS key adds a second access control: reading the logs also requires kms:Decrypt."
+              },
+              "help": {
+                "text": "Encrypting trail logs with a customer managed KMS key adds a second access control: reading the logs also requires kms:Decrypt.\n\nRemediation:\nkms_key_id = aws_kms_key.cloudtrail.arn",
+                "markdown": "Encrypting trail logs with a customer managed KMS key adds a second access control: reading the logs also requires kms:Decrypt.\n\n**Remediation**\n\n```hcl\nkms_key_id = aws_kms_key.cloudtrail.arn\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ct-003",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "logging",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EC2-001",
+              "name": "SecurityGroupAllowsIngressFromTheInternetToSensitivePorts",
+              "shortDescription": {
+                "text": "Security group allows ingress from the internet to sensitive ports"
+              },
+              "fullDescription": {
+                "text": "Remote administration (SSH, RDP, WinRM, VNC) and database or cache ports open to 0.0.0.0/0 or ::/0 are scanned constantly and brute-forced within minutes. Rules that open every port are reported as critical."
+              },
+              "help": {
+                "text": "Remote administration (SSH, RDP, WinRM, VNC) and database or cache ports open to 0.0.0.0/0 or ::/0 are scanned constantly and brute-forced within minutes. Rules that open every port are reported as critical.\n\nRemediation:\nRestrict the source to known CIDR ranges or another security group, and reach instances through SSM Session Manager or a bastion instead of exposing admin ports.\n\ningress {\n  from_port   = 22\n  to_port     = 22\n  protocol    = \"tcp\"\n  cidr_blocks = [\"10.20.0.0/16\"]\n}",
+                "markdown": "Remote administration (SSH, RDP, WinRM, VNC) and database or cache ports open to 0.0.0.0/0 or ::/0 are scanned constantly and brute-forced within minutes. Rules that open every port are reported as critical.\n\n**Remediation**\n\nRestrict the source to known CIDR ranges or another security group, and reach instances through SSM Session Manager or a bastion instead of exposing admin ports.\n\n```hcl\ningress {\n  from_port   = 22\n  to_port     = 22\n  protocol    = \"tcp\"\n  cidr_blocks = [\"10.20.0.0/16\"]\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ec2-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EC2-002",
+              "name": "EbsStorageIsNotEncrypted",
+              "shortDescription": {
+                "text": "EBS storage is not encrypted"
+              },
+              "fullDescription": {
+                "text": "Unencrypted EBS volumes and snapshots expose data to anyone who gains access to a snapshot copy or the underlying storage. Encryption is free and has no meaningful performance cost."
+              },
+              "help": {
+                "text": "Unencrypted EBS volumes and snapshots expose data to anyone who gains access to a snapshot copy or the underlying storage. Encryption is free and has no meaningful performance cost.\n\nRemediation:\nSet encrypted = true on volumes and block device mappings, or turn on account-wide default encryption:\n\nresource \"aws_ebs_encryption_by_default\" \"this\" {\n  enabled = true\n}",
+                "markdown": "Unencrypted EBS volumes and snapshots expose data to anyone who gains access to a snapshot copy or the underlying storage. Encryption is free and has no meaningful performance cost.\n\n**Remediation**\n\nSet encrypted = true on volumes and block device mappings, or turn on account-wide default encryption:\n\n```hcl\nresource \"aws_ebs_encryption_by_default\" \"this\" {\n  enabled = true\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ec2-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EC2-003",
+              "name": "InstanceMetadataServiceAllowsImdsv1",
+              "shortDescription": {
+                "text": "Instance metadata service allows IMDSv1"
+              },
+              "fullDescription": {
+                "text": "IMDSv1 answers unauthenticated GET requests, so any SSRF bug in an application on the instance can be used to steal its IAM role credentials. IMDSv2 requires a session token and blocks this."
+              },
+              "help": {
+                "text": "IMDSv1 answers unauthenticated GET requests, so any SSRF bug in an application on the instance can be used to steal its IAM role credentials. IMDSv2 requires a session token and blocks this.\n\nRemediation:\nmetadata_options {\n  http_endpoint = \"enabled\"\n  http_tokens   = \"required\"\n}",
+                "markdown": "IMDSv1 answers unauthenticated GET requests, so any SSRF bug in an application on the instance can be used to steal its IAM role credentials. IMDSv2 requires a session token and blocks this.\n\n**Remediation**\n\n```hcl\nmetadata_options {\n  http_endpoint = \"enabled\"\n  http_tokens   = \"required\"\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ec2-003",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "credentials"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EC2-004",
+              "name": "InstanceGetsAPublicIpAddress",
+              "shortDescription": {
+                "text": "Instance gets a public IP address"
+              },
+              "fullDescription": {
+                "text": "Instances with public IPs are directly reachable from the internet, so a single security group mistake exposes them. Put workloads in private subnets behind a load balancer or NAT."
+              },
+              "help": {
+                "text": "Instances with public IPs are directly reachable from the internet, so a single security group mistake exposes them. Put workloads in private subnets behind a load balancer or NAT.\n\nRemediation:\nRemove associate_public_ip_address (or set it to false) and place the instance in a private subnet.",
+                "markdown": "Instances with public IPs are directly reachable from the internet, so a single security group mistake exposes them. Put workloads in private subnets behind a load balancer or NAT.\n\n**Remediation**\n\nRemove associate_public_ip_address (or set it to false) and place the instance in a private subnet."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ec2-004",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EC2-005",
+              "name": "DefaultSecurityGroupAllowsTraffic",
+              "shortDescription": {
+                "text": "Default security group allows traffic"
+              },
+              "fullDescription": {
+                "text": "Resources launched without an explicit security group land in the VPC default group. It should allow nothing, so that mistake fails closed."
+              },
+              "help": {
+                "text": "Resources launched without an explicit security group land in the VPC default group. It should allow nothing, so that mistake fails closed.\n\nRemediation:\nManage the default group with no ingress or egress blocks:\n\nresource \"aws_default_security_group\" \"default\" {\n  vpc_id = aws_vpc.main.id\n}",
+                "markdown": "Resources launched without an explicit security group land in the VPC default group. It should allow nothing, so that mistake fails closed.\n\n**Remediation**\n\nManage the default group with no ingress or egress blocks:\n\n```hcl\nresource \"aws_default_security_group\" \"default\" {\n  vpc_id = aws_vpc.main.id\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ec2-005",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-ECR-001",
+              "name": "EcrRepositoryDoesNotScanImagesOnPush",
+              "shortDescription": {
+                "text": "ECR repository does not scan images on push"
+              },
+              "fullDescription": {
+                "text": "Scanning on push catches known-vulnerable packages before images are deployed."
+              },
+              "help": {
+                "text": "Scanning on push catches known-vulnerable packages before images are deployed.\n\nRemediation:\nimage_scanning_configuration {\n  scan_on_push = true\n}",
+                "markdown": "Scanning on push catches known-vulnerable packages before images are deployed.\n\n**Remediation**\n\n```hcl\nimage_scanning_configuration {\n  scan_on_push = true\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-ecr-001",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "supply-chain"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EFS-001",
+              "name": "EfsFileSystemIsNotEncrypted",
+              "shortDescription": {
+                "text": "EFS file system is not encrypted"
+              },
+              "fullDescription": {
+                "text": "EFS encryption at rest can only be chosen at creation time."
+              },
+              "help": {
+                "text": "EFS encryption at rest can only be chosen at creation time.\n\nRemediation:\nencrypted = true",
+                "markdown": "EFS encryption at rest can only be chosen at creation time.\n\n**Remediation**\n\n```hcl\nencrypted = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-efs-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-EKS-001",
+              "name": "EksApiEndpointIsOpenToTheInternet",
+              "shortDescription": {
+                "text": "EKS API endpoint is open to the internet"
+              },
+              "fullDescription": {
+                "text": "By default the Kubernetes API server endpoint is public and accepts connections from 0.0.0.0/0. Any leaked kubeconfig or API vulnerability is then exploitable from anywhere."
+              },
+              "help": {
+                "text": "By default the Kubernetes API server endpoint is public and accepts connections from 0.0.0.0/0. Any leaked kubeconfig or API vulnerability is then exploitable from anywhere.\n\nRemediation:\nvpc_config {\n  endpoint_private_access = true\n  endpoint_public_access  = false  # or restrict public_access_cidrs\n}",
+                "markdown": "By default the Kubernetes API server endpoint is public and accepts connections from 0.0.0.0/0. Any leaked kubeconfig or API vulnerability is then exploitable from anywhere.\n\n**Remediation**\n\n```hcl\nvpc_config {\n  endpoint_private_access = true\n  endpoint_public_access  = false  # or restrict public_access_cidrs\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-eks-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-ELB-001",
+              "name": "LoadBalancerListenerServesPlainHttp",
+              "shortDescription": {
+                "text": "Load balancer listener serves plain HTTP"
+              },
+              "fullDescription": {
+                "text": "An HTTP listener that forwards traffic (instead of redirecting to HTTPS) sends credentials and session cookies in clear text."
+              },
+              "help": {
+                "text": "An HTTP listener that forwards traffic (instead of redirecting to HTTPS) sends credentials and session cookies in clear text.\n\nRemediation:\ndefault_action {\n  type = \"redirect\"\n  redirect {\n    port        = \"443\"\n    protocol    = \"HTTPS\"\n    status_code = \"HTTP_301\"\n  }\n}",
+                "markdown": "An HTTP listener that forwards traffic (instead of redirecting to HTTPS) sends credentials and session cookies in clear text.\n\n**Remediation**\n\n```hcl\ndefault_action {\n  type = \"redirect\"\n  redirect {\n    port        = \"443\"\n    protocol    = \"HTTPS\"\n    status_code = \"HTTP_301\"\n  }\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-elb-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-ELB-002",
+              "name": "LoadBalancerListenerAllowsTlsOr",
+              "shortDescription": {
+                "text": "Load balancer listener allows TLS 1.0 or 1.1"
+              },
+              "fullDescription": {
+                "text": "TLS 1.0 and 1.1 are deprecated (RFC 8996). Older ELB security policies, including the historical default ELBSecurityPolicy-2016-08, still negotiate them."
+              },
+              "help": {
+                "text": "TLS 1.0 and 1.1 are deprecated (RFC 8996). Older ELB security policies, including the historical default ELBSecurityPolicy-2016-08, still negotiate them.\n\nRemediation:\nssl_policy = \"ELBSecurityPolicy-TLS13-1-2-2021-06\"",
+                "markdown": "TLS 1.0 and 1.1 are deprecated (RFC 8996). Older ELB security policies, including the historical default ELBSecurityPolicy-2016-08, still negotiate them.\n\n**Remediation**\n\n```hcl\nssl_policy = \"ELBSecurityPolicy-TLS13-1-2-2021-06\"\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-elb-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-IAM-001",
+              "name": "IamPolicyGrantsFullAdministratorAccess",
+              "shortDescription": {
+                "text": "IAM policy grants full administrator access"
+              },
+              "fullDescription": {
+                "text": "A statement allowing Action \"*\" on Resource \"*\" is full admin. Anyone or anything that can use this policy can disable logging, create users and take over the account."
+              },
+              "help": {
+                "text": "A statement allowing Action \"*\" on Resource \"*\" is full admin. Anyone or anything that can use this policy can disable logging, create users and take over the account.\n\nRemediation:\nGrant only the actions and resources the workload needs. IAM Access Analyzer can generate a least-privilege policy from CloudTrail activity.",
+                "markdown": "A statement allowing Action \"*\" on Resource \"*\" is full admin. Anyone or anything that can use this policy can disable logging, create users and take over the account.\n\n**Remediation**\n\nGrant only the actions and resources the workload needs. IAM Access Analyzer can generate a least-privilege policy from CloudTrail activity."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-iam-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "iam",
+                  "least-privilege"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-IAM-002",
+              "name": "IamPolicyUsesServiceWideWildcardActions",
+              "shortDescription": {
+                "text": "IAM policy uses service-wide wildcard actions"
+              },
+              "fullDescription": {
+                "text": "Actions such as \"s3:*\" or \"iam:*\", or an Allow with NotAction, grant every current and future permission of a service, including destructive and privilege-escalation actions."
+              },
+              "help": {
+                "text": "Actions such as \"s3:*\" or \"iam:*\", or an Allow with NotAction, grant every current and future permission of a service, including destructive and privilege-escalation actions.\n\nRemediation:\nList the specific actions needed, for example [\"s3:GetObject\", \"s3:PutObject\"] instead of \"s3:*\".",
+                "markdown": "Actions such as \"s3:*\" or \"iam:*\", or an Allow with NotAction, grant every current and future permission of a service, including destructive and privilege-escalation actions.\n\n**Remediation**\n\nList the specific actions needed, for example [\"s3:GetObject\", \"s3:PutObject\"] instead of \"s3:*\"."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-iam-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "iam",
+                  "least-privilege"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-IAM-003",
+              "name": "AdministratoraccessManagedPolicyIsAttached",
+              "shortDescription": {
+                "text": "AdministratorAccess managed policy is attached"
+              },
+              "fullDescription": {
+                "text": "The AWS managed AdministratorAccess policy grants every action on every resource. Attaching it to roles used by workloads or CI turns any compromise of that workload into a full account takeover."
+              },
+              "help": {
+                "text": "The AWS managed AdministratorAccess policy grants every action on every resource. Attaching it to roles used by workloads or CI turns any compromise of that workload into a full account takeover.\n\nRemediation:\nAttach a scoped customer managed policy instead, and reserve administrator access for break-glass roles protected by MFA.",
+                "markdown": "The AWS managed AdministratorAccess policy grants every action on every resource. Attaching it to roles used by workloads or CI turns any compromise of that workload into a full account takeover.\n\n**Remediation**\n\nAttach a scoped customer managed policy instead, and reserve administrator access for break-glass roles protected by MFA."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-iam-003",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "iam",
+                  "least-privilege"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-IAM-004",
+              "name": "IamRoleCanBeAssumedByAnyPrincipal",
+              "shortDescription": {
+                "text": "IAM role can be assumed by any principal"
+              },
+              "fullDescription": {
+                "text": "A trust policy that allows Principal \"*\" (or AWS \"*\") to call sts:AssumeRole without a condition lets any AWS account in the world assume the role."
+              },
+              "help": {
+                "text": "A trust policy that allows Principal \"*\" (or AWS \"*\") to call sts:AssumeRole without a condition lets any AWS account in the world assume the role.\n\nRemediation:\nTrust specific accounts, roles or services, and require sts:ExternalId or aws:PrincipalOrgID conditions for cross-account access.",
+                "markdown": "A trust policy that allows Principal \"*\" (or AWS \"*\") to call sts:AssumeRole without a condition lets any AWS account in the world assume the role.\n\n**Remediation**\n\nTrust specific accounts, roles or services, and require sts:ExternalId or aws:PrincipalOrgID conditions for cross-account access."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-iam-004",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "iam"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-IAM-005",
+              "name": "IamPolicyIsAttachedDirectlyToAUser",
+              "shortDescription": {
+                "text": "IAM policy is attached directly to a user"
+              },
+              "fullDescription": {
+                "text": "Permissions granted to individual users are hard to audit and tend to outlive the person's role. Grant permissions to groups or roles."
+              },
+              "help": {
+                "text": "Permissions granted to individual users are hard to audit and tend to outlive the person's role. Grant permissions to groups or roles.\n\nRemediation:\nAttach the policy to an aws_iam_group and add the user to the group, or move humans to IAM Identity Center.",
+                "markdown": "Permissions granted to individual users are hard to audit and tend to outlive the person's role. Grant permissions to groups or roles.\n\n**Remediation**\n\nAttach the policy to an aws_iam_group and add the user to the group, or move humans to IAM Identity Center."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-iam-005",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "iam"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-KMS-001",
+              "name": "KmsKeyRotationIsDisabled",
+              "shortDescription": {
+                "text": "KMS key rotation is disabled"
+              },
+              "fullDescription": {
+                "text": "Automatic rotation limits how much data is protected by any one key version. It only applies to symmetric encryption keys."
+              },
+              "help": {
+                "text": "Automatic rotation limits how much data is protected by any one key version. It only applies to symmetric encryption keys.\n\nRemediation:\nenable_key_rotation = true",
+                "markdown": "Automatic rotation limits how much data is protected by any one key version. It only applies to symmetric encryption keys.\n\n**Remediation**\n\n```hcl\nenable_key_rotation = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-kms-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-LAMBDA-001",
+              "name": "LambdaFunctionUrlHasNoAuthentication",
+              "shortDescription": {
+                "text": "Lambda function URL has no authentication"
+              },
+              "fullDescription": {
+                "text": "authorization_type = \"NONE\" makes the function callable by anyone with the URL. That is sometimes intended for webhooks, but it should be a conscious, documented choice."
+              },
+              "help": {
+                "text": "authorization_type = \"NONE\" makes the function callable by anyone with the URL. That is sometimes intended for webhooks, but it should be a conscious, documented choice.\n\nRemediation:\nauthorization_type = \"AWS_IAM\"  # or suppress with a reason if public by design",
+                "markdown": "authorization_type = \"NONE\" makes the function callable by anyone with the URL. That is sometimes intended for webhooks, but it should be a conscious, documented choice.\n\n**Remediation**\n\n```hcl\nauthorization_type = \"AWS_IAM\"  # or suppress with a reason if public by design\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-lambda-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "authentication"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-OS-001",
+              "name": "OpensearchDomainIsNotEncryptedAtRest",
+              "shortDescription": {
+                "text": "OpenSearch domain is not encrypted at rest"
+              },
+              "fullDescription": {
+                "text": "Search domains often hold copies of application logs and customer data. Encryption at rest protects indices, logs, swap files and snapshots."
+              },
+              "help": {
+                "text": "Search domains often hold copies of application logs and customer data. Encryption at rest protects indices, logs, swap files and snapshots.\n\nRemediation:\nencrypt_at_rest {\n  enabled = true\n}",
+                "markdown": "Search domains often hold copies of application logs and customer data. Encryption at rest protects indices, logs, swap files and snapshots.\n\n**Remediation**\n\n```hcl\nencrypt_at_rest {\n  enabled = true\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-os-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-RDS-001",
+              "name": "RdsStorageIsNotEncrypted",
+              "shortDescription": {
+                "text": "RDS storage is not encrypted"
+              },
+              "fullDescription": {
+                "text": "Unencrypted database storage, snapshots and read replicas expose data at rest. Encryption can only be enabled when the database is created, so it is expensive to fix later."
+              },
+              "help": {
+                "text": "Unencrypted database storage, snapshots and read replicas expose data at rest. Encryption can only be enabled when the database is created, so it is expensive to fix later.\n\nRemediation:\nstorage_encrypted = true\nkms_key_id        = aws_kms_key.rds.arn  # optional customer managed key",
+                "markdown": "Unencrypted database storage, snapshots and read replicas expose data at rest. Encryption can only be enabled when the database is created, so it is expensive to fix later.\n\n**Remediation**\n\n```hcl\nstorage_encrypted = true\nkms_key_id        = aws_kms_key.rds.arn  # optional customer managed key\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-rds-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-RDS-002",
+              "name": "RdsInstanceIsPubliclyAccessible",
+              "shortDescription": {
+                "text": "RDS instance is publicly accessible"
+              },
+              "fullDescription": {
+                "text": "publicly_accessible = true gives the database a public DNS name and IP, leaving only the security group between it and the internet."
+              },
+              "help": {
+                "text": "publicly_accessible = true gives the database a public DNS name and IP, leaving only the security group between it and the internet.\n\nRemediation:\npublicly_accessible = false",
+                "markdown": "publicly_accessible = true gives the database a public DNS name and IP, leaving only the security group between it and the internet.\n\n**Remediation**\n\n```hcl\npublicly_accessible = false\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-rds-002",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-RDS-003",
+              "name": "RdsAutomatedBackupsAreDisabled",
+              "shortDescription": {
+                "text": "RDS automated backups are disabled"
+              },
+              "fullDescription": {
+                "text": "A backup retention period of 0 disables automated backups and point-in-time recovery."
+              },
+              "help": {
+                "text": "A backup retention period of 0 disables automated backups and point-in-time recovery.\n\nRemediation:\nbackup_retention_period = 7  # or longer",
+                "markdown": "A backup retention period of 0 disables automated backups and point-in-time recovery.\n\n**Remediation**\n\n```hcl\nbackup_retention_period = 7  # or longer\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-rds-003",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "resilience"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-REDSHIFT-001",
+              "name": "RedshiftClusterIsPubliclyAccessible",
+              "shortDescription": {
+                "text": "Redshift cluster is publicly accessible"
+              },
+              "fullDescription": {
+                "text": "A publicly accessible Redshift cluster can be reached from the internet, leaving only the security group between the data warehouse and attackers."
+              },
+              "help": {
+                "text": "A publicly accessible Redshift cluster can be reached from the internet, leaving only the security group between the data warehouse and attackers.\n\nRemediation:\npublicly_accessible = false",
+                "markdown": "A publicly accessible Redshift cluster can be reached from the internet, leaving only the security group between the data warehouse and attackers.\n\n**Remediation**\n\n```hcl\npublicly_accessible = false\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-redshift-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-S3-001",
+              "name": "S3BucketAclGrantsPublicAccess",
+              "shortDescription": {
+                "text": "S3 bucket ACL grants public access"
+              },
+              "fullDescription": {
+                "text": "A canned ACL of public-read, public-read-write or authenticated-read lets anyone on the internet (or any AWS account) list or modify objects. Public ACLs are the classic cause of S3 data leaks."
+              },
+              "help": {
+                "text": "A canned ACL of public-read, public-read-write or authenticated-read lets anyone on the internet (or any AWS account) list or modify objects. Public ACLs are the classic cause of S3 data leaks.\n\nRemediation:\nUse a private ACL (or disable ACLs entirely with object ownership \"BucketOwnerEnforced\") and serve public content through CloudFront with origin access control instead.\n\nresource \"aws_s3_bucket_ownership_controls\" \"this\" {\n  bucket = aws_s3_bucket.this.id\n  rule { object_ownership = \"BucketOwnerEnforced\" }\n}",
+                "markdown": "A canned ACL of public-read, public-read-write or authenticated-read lets anyone on the internet (or any AWS account) list or modify objects. Public ACLs are the classic cause of S3 data leaks.\n\n**Remediation**\n\nUse a private ACL (or disable ACLs entirely with object ownership \"BucketOwnerEnforced\") and serve public content through CloudFront with origin access control instead.\n\n```hcl\nresource \"aws_s3_bucket_ownership_controls\" \"this\" {\n  bucket = aws_s3_bucket.this.id\n  rule { object_ownership = \"BucketOwnerEnforced\" }\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-s3-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-S3-002",
+              "name": "S3BucketIsNotCoveredByAFullPublicAccessBlock",
+              "shortDescription": {
+                "text": "S3 bucket is not covered by a full public access block"
+              },
+              "fullDescription": {
+                "text": "S3 Block Public Access is the guard rail that stops a future ACL or bucket policy change from exposing data. Every bucket should have all four settings enabled, either on the bucket or account-wide."
+              },
+              "help": {
+                "text": "S3 Block Public Access is the guard rail that stops a future ACL or bucket policy change from exposing data. Every bucket should have all four settings enabled, either on the bucket or account-wide.\n\nRemediation:\nresource \"aws_s3_bucket_public_access_block\" \"this\" {\n  bucket                  = aws_s3_bucket.this.id\n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n}",
+                "markdown": "S3 Block Public Access is the guard rail that stops a future ACL or bucket policy change from exposing data. Every bucket should have all four settings enabled, either on the bucket or account-wide.\n\n**Remediation**\n\n```hcl\nresource \"aws_s3_bucket_public_access_block\" \"this\" {\n  bucket                  = aws_s3_bucket.this.id\n  block_public_acls       = true\n  block_public_policy     = true\n  ignore_public_acls      = true\n  restrict_public_buckets = true\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-s3-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-S3-003",
+              "name": "S3BucketPolicyAllowsAccessFromAnyPrincipal",
+              "shortDescription": {
+                "text": "S3 bucket policy allows access from any principal"
+              },
+              "fullDescription": {
+                "text": "A bucket policy statement with Effect Allow and Principal \"*\" and no Condition grants that access to everyone on the internet."
+              },
+              "help": {
+                "text": "A bucket policy statement with Effect Allow and Principal \"*\" and no Condition grants that access to everyone on the internet.\n\nRemediation:\nName the specific AWS principals that need access, or add a Condition (for example aws:SourceVpce, aws:PrincipalOrgID or aws:SourceArn) that narrows who can use the statement.",
+                "markdown": "A bucket policy statement with Effect Allow and Principal \"*\" and no Condition grants that access to everyone on the internet.\n\n**Remediation**\n\nName the specific AWS principals that need access, or add a Condition (for example aws:SourceVpce, aws:PrincipalOrgID or aws:SourceArn) that narrows who can use the statement."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-s3-003",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-S3-004",
+              "name": "S3BucketVersioningIsNotEnabled",
+              "shortDescription": {
+                "text": "S3 bucket versioning is not enabled"
+              },
+              "fullDescription": {
+                "text": "Without versioning, an overwritten or deleted object is gone for good, which turns ransomware or a bad deploy script into permanent data loss."
+              },
+              "help": {
+                "text": "Without versioning, an overwritten or deleted object is gone for good, which turns ransomware or a bad deploy script into permanent data loss.\n\nRemediation:\nresource \"aws_s3_bucket_versioning\" \"this\" {\n  bucket = aws_s3_bucket.this.id\n  versioning_configuration { status = \"Enabled\" }\n}",
+                "markdown": "Without versioning, an overwritten or deleted object is gone for good, which turns ransomware or a bad deploy script into permanent data loss.\n\n**Remediation**\n\n```hcl\nresource \"aws_s3_bucket_versioning\" \"this\" {\n  bucket = aws_s3_bucket.this.id\n  versioning_configuration { status = \"Enabled\" }\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-s3-004",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "resilience"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-SNS-001",
+              "name": "SnsTopicIsNotEncrypted",
+              "shortDescription": {
+                "text": "SNS topic is not encrypted"
+              },
+              "fullDescription": {
+                "text": "Messages in an unencrypted topic are stored in plain text. Use a KMS key so access to message content is also controlled by key policy."
+              },
+              "help": {
+                "text": "Messages in an unencrypted topic are stored in plain text. Use a KMS key so access to message content is also controlled by key policy.\n\nRemediation:\nkms_master_key_id = \"alias/aws/sns\"  # or a customer managed key",
+                "markdown": "Messages in an unencrypted topic are stored in plain text. Use a KMS key so access to message content is also controlled by key policy.\n\n**Remediation**\n\n```hcl\nkms_master_key_id = \"alias/aws/sns\"  # or a customer managed key\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-sns-001",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AWS-SQS-001",
+              "name": "SqsQueueEncryptionIsDisabled",
+              "shortDescription": {
+                "text": "SQS queue encryption is disabled"
+              },
+              "fullDescription": {
+                "text": "New queues use SQS-managed encryption by default; this queue explicitly turns it off and has no KMS key."
+              },
+              "help": {
+                "text": "New queues use SQS-managed encryption by default; this queue explicitly turns it off and has no KMS key.\n\nRemediation:\nRemove sqs_managed_sse_enabled = false, or set kms_master_key_id.",
+                "markdown": "New queues use SQS-managed encryption by default; this queue explicitly turns it off and has no KMS key.\n\n**Remediation**\n\nRemove sqs_managed_sse_enabled = false, or set kms_master_key_id."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#aws-sqs-001",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "aws",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-KV-001",
+              "name": "KeyVaultPurgeProtectionIsDisabled",
+              "shortDescription": {
+                "text": "Key Vault purge protection is disabled"
+              },
+              "fullDescription": {
+                "text": "Without purge protection, anyone with sufficient rights can permanently delete the vault and its keys during the soft-delete period, which can make encrypted data unrecoverable."
+              },
+              "help": {
+                "text": "Without purge protection, anyone with sufficient rights can permanently delete the vault and its keys during the soft-delete period, which can make encrypted data unrecoverable.\n\nRemediation:\npurge_protection_enabled = true",
+                "markdown": "Without purge protection, anyone with sufficient rights can permanently delete the vault and its keys during the soft-delete period, which can make encrypted data unrecoverable.\n\n**Remediation**\n\n```hcl\npurge_protection_enabled = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-kv-001",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "resilience"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-NET-001",
+              "name": "NetworkSecurityGroupAllowsInboundInternetTrafficToSensitivePorts",
+              "shortDescription": {
+                "text": "Network security group allows inbound internet traffic to sensitive ports"
+              },
+              "fullDescription": {
+                "text": "An Allow rule from \"*\", \"Internet\" or 0.0.0.0/0 to SSH, RDP, WinRM or database ports exposes them to constant scanning and brute force. Rules that open every port are reported as critical."
+              },
+              "help": {
+                "text": "An Allow rule from \"*\", \"Internet\" or 0.0.0.0/0 to SSH, RDP, WinRM or database ports exposes them to constant scanning and brute force. Rules that open every port are reported as critical.\n\nRemediation:\nLimit source_address_prefix to known ranges, and use Azure Bastion or just-in-time VM access for administration.",
+                "markdown": "An Allow rule from \"*\", \"Internet\" or 0.0.0.0/0 to SSH, RDP, WinRM or database ports exposes them to constant scanning and brute force. Rules that open every port are reported as critical.\n\n**Remediation**\n\nLimit source_address_prefix to known ranges, and use Azure Bastion or just-in-time VM access for administration."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-net-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-SQL-001",
+              "name": "DatabaseFirewallRuleAllowsTheEntireInternet",
+              "shortDescription": {
+                "text": "Database firewall rule allows the entire internet"
+              },
+              "fullDescription": {
+                "text": "A firewall rule from 0.0.0.0 to 255.255.255.255 lets every IP address on the internet attempt to log in to the database server."
+              },
+              "help": {
+                "text": "A firewall rule from 0.0.0.0 to 255.255.255.255 lets every IP address on the internet attempt to log in to the database server.\n\nRemediation:\nAllow only the client ranges that need access, or use private endpoints.",
+                "markdown": "A firewall rule from 0.0.0.0 to 255.255.255.255 lets every IP address on the internet attempt to log in to the database server.\n\n**Remediation**\n\nAllow only the client ranges that need access, or use private endpoints."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-sql-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-STORAGE-001",
+              "name": "StorageAccountAllowsPublicBlobContainers",
+              "shortDescription": {
+                "text": "Storage account allows public blob containers"
+              },
+              "fullDescription": {
+                "text": "allow_nested_items_to_be_public = true lets any container in the account be switched to anonymous public read access."
+              },
+              "help": {
+                "text": "allow_nested_items_to_be_public = true lets any container in the account be switched to anonymous public read access.\n\nRemediation:\nallow_nested_items_to_be_public = false",
+                "markdown": "allow_nested_items_to_be_public = true lets any container in the account be switched to anonymous public read access.\n\n**Remediation**\n\n```hcl\nallow_nested_items_to_be_public = false\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-storage-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-STORAGE-002",
+              "name": "StorageAccountAcceptsPlainHttp",
+              "shortDescription": {
+                "text": "Storage account accepts plain HTTP"
+              },
+              "fullDescription": {
+                "text": "With HTTPS-only disabled, storage requests (including SAS tokens in the URL) can travel unencrypted."
+              },
+              "help": {
+                "text": "With HTTPS-only disabled, storage requests (including SAS tokens in the URL) can travel unencrypted.\n\nRemediation:\nhttps_traffic_only_enabled = true  # enable_https_traffic_only on azurerm < 4.0",
+                "markdown": "With HTTPS-only disabled, storage requests (including SAS tokens in the URL) can travel unencrypted.\n\n**Remediation**\n\n```hcl\nhttps_traffic_only_enabled = true  # enable_https_traffic_only on azurerm < 4.0\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-storage-002",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "AZ-STORAGE-003",
+              "name": "StorageAccountAllowsTlsVersionsOlderThan",
+              "shortDescription": {
+                "text": "Storage account allows TLS versions older than 1.2"
+              },
+              "fullDescription": {
+                "text": "TLS 1.0 and 1.1 are deprecated and Azure is retiring support for them."
+              },
+              "help": {
+                "text": "TLS 1.0 and 1.1 are deprecated and Azure is retiring support for them.\n\nRemediation:\nmin_tls_version = \"TLS1_2\"",
+                "markdown": "TLS 1.0 and 1.1 are deprecated and Azure is retiring support for them.\n\n**Remediation**\n\n```hcl\nmin_tls_version = \"TLS1_2\"\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#az-storage-003",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "azure",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-COMPUTE-001",
+              "name": "InstanceUsesTheDefaultServiceAccountWithFullApiAccess",
+              "shortDescription": {
+                "text": "Instance uses the default service account with full API access"
+              },
+              "fullDescription": {
+                "text": "The Compute Engine default service account has the Editor role in many projects. Combined with the cloud-platform scope, any code running on the VM can manage most of the project."
+              },
+              "help": {
+                "text": "The Compute Engine default service account has the Editor role in many projects. Combined with the cloud-platform scope, any code running on the VM can manage most of the project.\n\nRemediation:\nCreate a dedicated service account with only the roles the workload needs, and attach it with that email.",
+                "markdown": "The Compute Engine default service account has the Editor role in many projects. Combined with the cloud-platform scope, any code running on the VM can manage most of the project.\n\n**Remediation**\n\nCreate a dedicated service account with only the roles the workload needs, and attach it with that email."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-compute-001",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "iam",
+                  "credentials"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-IAM-001",
+              "name": "ProjectOrOrganizationIamGrantsARoleToThePublic",
+              "shortDescription": {
+                "text": "Project or organization IAM grants a role to the public"
+              },
+              "fullDescription": {
+                "text": "Granting any role on a project, folder or organization to allUsers or allAuthenticatedUsers gives that access to everyone with (or without) a Google account."
+              },
+              "help": {
+                "text": "Granting any role on a project, folder or organization to allUsers or allAuthenticatedUsers gives that access to everyone with (or without) a Google account.\n\nRemediation:\nGrant the role to specific identities instead.",
+                "markdown": "Granting any role on a project, folder or organization to allUsers or allAuthenticatedUsers gives that access to everyone with (or without) a Google account.\n\n**Remediation**\n\nGrant the role to specific identities instead."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-iam-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "iam",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-IAM-002",
+              "name": "PrimitiveOwnerOrEditorRoleIsGranted",
+              "shortDescription": {
+                "text": "Primitive owner or editor role is granted"
+              },
+              "fullDescription": {
+                "text": "The basic Owner and Editor roles include thousands of permissions across every service. Google recommends predefined or custom roles instead."
+              },
+              "help": {
+                "text": "The basic Owner and Editor roles include thousands of permissions across every service. Google recommends predefined or custom roles instead.\n\nRemediation:\nReplace roles/owner and roles/editor with predefined roles scoped to the services the identity uses.",
+                "markdown": "The basic Owner and Editor roles include thousands of permissions across every service. Google recommends predefined or custom roles instead.\n\n**Remediation**\n\nReplace roles/owner and roles/editor with predefined roles scoped to the services the identity uses."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-iam-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "iam",
+                  "least-privilege"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-NET-001",
+              "name": "FirewallRuleAllowsInternetTrafficToSensitivePorts",
+              "shortDescription": {
+                "text": "Firewall rule allows internet traffic to sensitive ports"
+              },
+              "fullDescription": {
+                "text": "An ingress rule from 0.0.0.0/0 to SSH, RDP or database ports exposes every matching instance to the internet. Rules that allow every port are reported as critical."
+              },
+              "help": {
+                "text": "An ingress rule from 0.0.0.0/0 to SSH, RDP or database ports exposes every matching instance to the internet. Rules that allow every port are reported as critical.\n\nRemediation:\nRestrict source_ranges, and use Identity-Aware Proxy TCP forwarding (35.235.240.0/20) for SSH and RDP.",
+                "markdown": "An ingress rule from 0.0.0.0/0 to SSH, RDP or database ports exposes every matching instance to the internet. Rules that allow every port are reported as critical.\n\n**Remediation**\n\nRestrict source_ranges, and use Identity-Aware Proxy TCP forwarding (35.235.240.0/20) for SSH and RDP."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-net-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-SQL-001",
+              "name": "CloudSqlInstanceIsOpenToTheInternet",
+              "shortDescription": {
+                "text": "Cloud SQL instance is open to the internet"
+              },
+              "fullDescription": {
+                "text": "An authorized network of 0.0.0.0/0 lets any IP address connect to the instance's public IP and try to log in."
+              },
+              "help": {
+                "text": "An authorized network of 0.0.0.0/0 lets any IP address connect to the instance's public IP and try to log in.\n\nRemediation:\nRemove the 0.0.0.0/0 authorized network; use private IP or the Cloud SQL Auth Proxy instead.",
+                "markdown": "An authorized network of 0.0.0.0/0 lets any IP address connect to the instance's public IP and try to log in.\n\n**Remediation**\n\nRemove the 0.0.0.0/0 authorized network; use private IP or the Cloud SQL Auth Proxy instead."
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-sql-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "network"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-SQL-002",
+              "name": "CloudSqlInstanceDoesNotRequireSsl",
+              "shortDescription": {
+                "text": "Cloud SQL instance does not require SSL"
+              },
+              "fullDescription": {
+                "text": "Unless SSL is enforced, clients can connect to the public IP over an unencrypted connection."
+              },
+              "help": {
+                "text": "Unless SSL is enforced, clients can connect to the public IP over an unencrypted connection.\n\nRemediation:\nsettings {\n  ip_configuration {\n    ssl_mode = \"ENCRYPTED_ONLY\"\n  }\n}",
+                "markdown": "Unless SSL is enforced, clients can connect to the public IP over an unencrypted connection.\n\n**Remediation**\n\n```hcl\nsettings {\n  ip_configuration {\n    ssl_mode = \"ENCRYPTED_ONLY\"\n  }\n}\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-sql-002",
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "encryption"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-STORAGE-001",
+              "name": "CloudStorageBucketIsPubliclyAccessible",
+              "shortDescription": {
+                "text": "Cloud Storage bucket is publicly accessible"
+              },
+              "fullDescription": {
+                "text": "Granting a role to allUsers or allAuthenticatedUsers makes the bucket readable (or writable) by anyone with a Google account or no account at all."
+              },
+              "help": {
+                "text": "Granting a role to allUsers or allAuthenticatedUsers makes the bucket readable (or writable) by anyone with a Google account or no account at all.\n\nRemediation:\nGrant roles to specific users, groups or service accounts. Enable public access prevention on the bucket:\n\npublic_access_prevention = \"enforced\"",
+                "markdown": "Granting a role to allUsers or allAuthenticatedUsers makes the bucket readable (or writable) by anyone with a Google account or no account at all.\n\n**Remediation**\n\nGrant roles to specific users, groups or service accounts. Enable public access prevention on the bucket:\n\n```hcl\npublic_access_prevention = \"enforced\"\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-storage-001",
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "GCP-STORAGE-002",
+              "name": "CloudStorageBucketDoesNotUseUniformBucketLevelAccess",
+              "shortDescription": {
+                "text": "Cloud Storage bucket does not use uniform bucket-level access"
+              },
+              "fullDescription": {
+                "text": "With fine-grained ACLs, individual objects can be made public even when bucket IAM looks locked down. Uniform bucket-level access makes IAM the only access control."
+              },
+              "help": {
+                "text": "With fine-grained ACLs, individual objects can be made public even when bucket IAM looks locked down. Uniform bucket-level access makes IAM the only access control.\n\nRemediation:\nuniform_bucket_level_access = true",
+                "markdown": "With fine-grained ACLs, individual objects can be made public even when bucket IAM looks locked down. Uniform bucket-level access makes IAM the only access control.\n\n**Remediation**\n\n```hcl\nuniform_bucket_level_access = true\n```"
+              },
+              "helpUri": "https://github.com/DaveyD347/terraform-misconfig-checker/blob/main/docs/rules.md#gcp-storage-002",
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "terraform",
+                  "gcp",
+                  "data-exposure"
+                ],
+                "precision": "high"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "AWS-EC2-001",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "aws_vpc_security_group_ingress_rule.debug_everything: Ingress from ::/0 to all ports"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 101
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_vpc_security_group_ingress_rule.debug_everything",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-001:aws_vpc_security_group_ingress_rule.debug_everything:Ingress from ::/0 to all ports"
+          },
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.5"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-004",
+          "ruleIndex": 17,
+          "level": "error",
+          "message": {
+            "text": "aws_iam_role.ci: Trust policy allows Principal \"*\" without a condition"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 163
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_role.ci",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-004:aws_iam_role.ci:Trust policy allows Principal \"*\" without a condition"
+          },
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.5"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-001",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "aws_iam_policy.deployer: Statement allows Action \"*\" on Resource \"*\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 173
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_policy.deployer",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-001:aws_iam_policy.deployer:Statement allows Action \"*\" on Resource \"*\""
+          },
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.5"
+          }
+        },
+        {
+          "ruleId": "AZ-NET-001",
+          "ruleIndex": 33,
+          "level": "error",
+          "message": {
+            "text": "azurerm_network_security_rule.any_any: Rule \"temp-allow-all\" allows inbound from 0.0.0.0/0 to all ports"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 68
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_network_security_rule.any_any",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-NET-001:azurerm_network_security_rule.any_any:Rule \"temp-allow-all\" allows inbound from 0.0.0.0/0 to all ports"
+          },
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.5"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-001",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "aws_iam_policy.etl: Statement allows Action \"*\" on Resource \"*\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/plan/tfplan.json"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_policy.etl",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-001:aws_iam_policy.etl:Statement allows Action \"*\" on Resource \"*\""
+          },
+          "properties": {
+            "severity": "critical",
+            "security-severity": "9.5"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-001",
+          "ruleIndex": 26,
+          "level": "error",
+          "message": {
+            "text": "aws_s3_bucket_acl.assets: Bucket ACL is \"public-read\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 32
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket_acl.assets",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-001:aws_s3_bucket_acl.assets:Bucket ACL is \"public-read\""
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-003",
+          "ruleIndex": 28,
+          "level": "error",
+          "message": {
+            "text": "aws_s3_bucket_policy.assets: Statement allows s3:GetObject to Principal \"*\" with no condition"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 45
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket_policy.assets",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-003:aws_s3_bucket_policy.assets:Statement allows s3:GetObject to Principal \"*\" with no condition"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-001",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "aws_security_group.web: Ingress from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 74
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_security_group.web",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-001:aws_security_group.web:Ingress from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-001",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "aws_security_group_rule.bastion_ssh: Ingress from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 96
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_security_group_rule.bastion_ssh",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-001:aws_security_group_rule.bastion_ssh:Ingress from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-001",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "aws_security_group.db: Ingress from 0.0.0.0/0 to 5432 (PostgreSQL)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 108
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_security_group.db",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-001:aws_security_group.db:Ingress from 0.0.0.0/0 to 5432 (PostgreSQL)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-RDS-002",
+          "ruleIndex": 23,
+          "level": "error",
+          "message": {
+            "text": "aws_db_instance.main: publicly_accessible is true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 143
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-RDS-002:aws_db_instance.main:publicly_accessible is true"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-RDS-001",
+          "ruleIndex": 22,
+          "level": "error",
+          "message": {
+            "text": "aws_db_instance.main: storage_encrypted is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 144
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-RDS-001:aws_db_instance.main:storage_encrypted is not true"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-003",
+          "ruleIndex": 16,
+          "level": "error",
+          "message": {
+            "text": "aws_iam_role_policy_attachment.ci_admin: Attaches arn:aws:iam::aws:policy/AdministratorAccess"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 168
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_role_policy_attachment.ci_admin",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-003:aws_iam_role_policy_attachment.ci_admin:Attaches arn:aws:iam::aws:policy/AdministratorAccess"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EKS-001",
+          "ruleIndex": 11,
+          "level": "error",
+          "message": {
+            "text": "aws_eks_cluster.main: Public endpoint accepts connections from 0.0.0.0/0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 236
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_eks_cluster.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EKS-001:aws_eks_cluster.main:Public endpoint accepts connections from 0.0.0.0/0"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AZ-STORAGE-001",
+          "ruleIndex": 35,
+          "level": "error",
+          "message": {
+            "text": "azurerm_storage_account.exports: allow_nested_items_to_be_public is true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_storage_account.exports",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-STORAGE-001:azurerm_storage_account.exports:allow_nested_items_to_be_public is true"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AZ-STORAGE-002",
+          "ruleIndex": 36,
+          "level": "error",
+          "message": {
+            "text": "azurerm_storage_account.exports: https_traffic_only_enabled is false"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 26
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_storage_account.exports",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-STORAGE-002:azurerm_storage_account.exports:https_traffic_only_enabled is false"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AZ-NET-001",
+          "ruleIndex": 33,
+          "level": "error",
+          "message": {
+            "text": "azurerm_network_security_group.vm: Rule \"allow-rdp\" allows inbound from * to 3389 (RDP)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 35
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_network_security_group.vm",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-NET-001:azurerm_network_security_group.vm:Rule \"allow-rdp\" allows inbound from * to 3389 (RDP)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AZ-SQL-001",
+          "ruleIndex": 34,
+          "level": "error",
+          "message": {
+            "text": "azurerm_mssql_firewall_rule.everyone: Firewall rule covers 0.0.0.0 - 255.255.255.255"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 91
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_mssql_firewall_rule.everyone",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-SQL-001:azurerm_mssql_firewall_rule.everyone:Firewall rule covers 0.0.0.0 - 255.255.255.255"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "GCP-STORAGE-001",
+          "ruleIndex": 44,
+          "level": "error",
+          "message": {
+            "text": "google_storage_bucket_iam_member.public_read: Grants roles/storage.objectViewer to allUsers"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 23
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_storage_bucket_iam_member.public_read",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-STORAGE-001:google_storage_bucket_iam_member.public_read:Grants roles/storage.objectViewer to allUsers"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "GCP-NET-001",
+          "ruleIndex": 41,
+          "level": "error",
+          "message": {
+            "text": "google_compute_firewall.ssh: Allows tcp from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 30
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_compute_firewall.ssh",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-NET-001:google_compute_firewall.ssh:Allows tcp from 0.0.0.0/0 to 22 (SSH)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "GCP-SQL-001",
+          "ruleIndex": 42,
+          "level": "error",
+          "message": {
+            "text": "google_sql_database_instance.main: Authorized network 0.0.0.0/0 allows the whole internet"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_sql_database_instance.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-SQL-001:google_sql_database_instance.main:Authorized network 0.0.0.0/0 allows the whole internet"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-001",
+          "ruleIndex": 4,
+          "level": "error",
+          "message": {
+            "text": "module.app.aws_security_group.this[0]: Ingress from 0.0.0.0/0 to 3389 (RDP)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/plan/tfplan.json"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.aws_security_group.this[0]",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-001:module.app.aws_security_group.this[0]:Ingress from 0.0.0.0/0 to 3389 (RDP)"
+          },
+          "properties": {
+            "severity": "high",
+            "security-severity": "8.0"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-002",
+          "ruleIndex": 27,
+          "level": "warning",
+          "message": {
+            "text": "aws_s3_bucket.assets: Public access block aws_s3_bucket_public_access_block.assets leaves block_public_acls, block_public_policy disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.assets",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-002:aws_s3_bucket.assets:Public access block aws_s3_bucket_public_access_block.assets leaves block_public_acls, block_public_policy disabled"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-002",
+          "ruleIndex": 27,
+          "level": "warning",
+          "message": {
+            "text": "aws_s3_bucket.logs: No aws_s3_bucket_public_access_block is attached to this bucket"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 57
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.logs",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-002:aws_s3_bucket.logs:No aws_s3_bucket_public_access_block is attached to this bucket"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-002",
+          "ruleIndex": 5,
+          "level": "warning",
+          "message": {
+            "text": "aws_ebs_volume.data: Volume is not encrypted"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 61
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_ebs_volume.data",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-002:aws_ebs_volume.data:Volume is not encrypted"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-003",
+          "ruleIndex": 6,
+          "level": "warning",
+          "message": {
+            "text": "aws_instance.web: http_tokens is \"optional\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 119
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_instance.web",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-003:aws_instance.web:http_tokens is \"optional\""
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-002",
+          "ruleIndex": 5,
+          "level": "warning",
+          "message": {
+            "text": "aws_instance.web: Root block device is not encrypted"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 125
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_instance.web",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-002:aws_instance.web:Root block device is not encrypted"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-RDS-003",
+          "ruleIndex": 24,
+          "level": "warning",
+          "message": {
+            "text": "aws_db_instance.main: backup_retention_period is 0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 145
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-RDS-003:aws_db_instance.main:backup_retention_period is 0"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-002",
+          "ruleIndex": 15,
+          "level": "warning",
+          "message": {
+            "text": "aws_iam_policy.deployer: Statement allows s3:*"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 173
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_policy.deployer",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-002:aws_iam_policy.deployer:Statement allows s3:*"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-KMS-001",
+          "ruleIndex": 19,
+          "level": "warning",
+          "message": {
+            "text": "aws_kms_key.app: enable_key_rotation is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 197
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_kms_key.app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-KMS-001:aws_kms_key.app:enable_key_rotation is not true"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-CT-001",
+          "ruleIndex": 1,
+          "level": "warning",
+          "message": {
+            "text": "aws_cloudtrail.main: is_multi_region_trail is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 201
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_cloudtrail.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-CT-001:aws_cloudtrail.main:is_multi_region_trail is not true"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-CT-002",
+          "ruleIndex": 2,
+          "level": "warning",
+          "message": {
+            "text": "aws_cloudtrail.main: enable_log_file_validation is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 201
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_cloudtrail.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-CT-002:aws_cloudtrail.main:enable_log_file_validation is not true"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-ELB-001",
+          "ruleIndex": 12,
+          "level": "warning",
+          "message": {
+            "text": "aws_lb_listener.http: HTTP listener does not redirect to HTTPS"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 211
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_lb_listener.http",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-ELB-001:aws_lb_listener.http:HTTP listener does not redirect to HTTPS"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-ELB-002",
+          "ruleIndex": 13,
+          "level": "warning",
+          "message": {
+            "text": "aws_lb_listener.https: ssl_policy ELBSecurityPolicy-2016-08 allows TLS 1.0/1.1"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 223
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_lb_listener.https",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-ELB-002:aws_lb_listener.https:ssl_policy ELBSecurityPolicy-2016-08 allows TLS 1.0/1.1"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-LAMBDA-001",
+          "ruleIndex": 20,
+          "level": "warning",
+          "message": {
+            "text": "aws_lambda_function_url.webhook: authorization_type is \"NONE\""
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 244
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_lambda_function_url.webhook",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-LAMBDA-001:aws_lambda_function_url.webhook:authorization_type is \"NONE\""
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "Public by design: Stripe webhook, payload signature is verified in code"
+            }
+          ]
+        },
+        {
+          "ruleId": "AZ-STORAGE-003",
+          "ruleIndex": 37,
+          "level": "warning",
+          "message": {
+            "text": "azurerm_storage_account.exports: min_tls_version is TLS1_0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_storage_account.exports",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-STORAGE-003:azurerm_storage_account.exports:min_tls_version is TLS1_0"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "GCP-SQL-002",
+          "ruleIndex": 43,
+          "level": "warning",
+          "message": {
+            "text": "google_sql_database_instance.main: Public IP is enabled and SSL is not enforced"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 56
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_sql_database_instance.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-SQL-002:google_sql_database_instance.main:Public IP is enabled and SSL is not enforced"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "GCP-IAM-002",
+          "ruleIndex": 40,
+          "level": "warning",
+          "message": {
+            "text": "google_project_iam_member.contractor: Grants roles/editor"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 69
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_project_iam_member.contractor",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-IAM-002:google_project_iam_member.contractor:Grants roles/editor"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "GCP-COMPUTE-001",
+          "ruleIndex": 38,
+          "level": "warning",
+          "message": {
+            "text": "google_compute_instance.worker: Default service account with the cloud-platform scope"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 88
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_compute_instance.worker",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-COMPUTE-001:google_compute_instance.worker:Default service account with the cloud-platform scope"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-002",
+          "ruleIndex": 27,
+          "level": "warning",
+          "message": {
+            "text": "aws_s3_bucket.reports: Public access block aws_s3_bucket_public_access_block.reports leaves restrict_public_buckets disabled"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/plan/tfplan.json"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.reports",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-002:aws_s3_bucket.reports:Public access block aws_s3_bucket_public_access_block.reports leaves restrict_public_buckets disabled"
+          },
+          "properties": {
+            "severity": "medium",
+            "security-severity": "5.5"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-004",
+          "ruleIndex": 29,
+          "level": "note",
+          "message": {
+            "text": "aws_s3_bucket.assets: Versioning is not enabled for this bucket"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.assets",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-004:aws_s3_bucket.assets:Versioning is not enabled for this bucket"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AWS-S3-004",
+          "ruleIndex": 29,
+          "level": "note",
+          "message": {
+            "text": "aws_s3_bucket.logs: Versioning is not enabled for this bucket"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 57
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.logs",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-S3-004:aws_s3_bucket.logs:Versioning is not enabled for this bucket"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AWS-EC2-004",
+          "ruleIndex": 7,
+          "level": "note",
+          "message": {
+            "text": "aws_instance.web: associate_public_ip_address is true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 122
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_instance.web",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-EC2-004:aws_instance.web:associate_public_ip_address is true"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AWS-IAM-005",
+          "ruleIndex": 18,
+          "level": "note",
+          "message": {
+            "text": "aws_iam_user_policy_attachment.bob: Policy is attached to an IAM user instead of a group or role"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 190
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_user_policy_attachment.bob",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-IAM-005:aws_iam_user_policy_attachment.bob:Policy is attached to an IAM user instead of a group or role"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AWS-CT-003",
+          "ruleIndex": 3,
+          "level": "note",
+          "message": {
+            "text": "aws_cloudtrail.main: kms_key_id is not set"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 201
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_cloudtrail.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-CT-003:aws_cloudtrail.main:kms_key_id is not set"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AWS-SQS-001",
+          "ruleIndex": 31,
+          "level": "note",
+          "message": {
+            "text": "aws_sqs_queue.jobs: sqs_managed_sse_enabled is false and no KMS key is set"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/aws/main.tf"
+                },
+                "region": {
+                  "startLine": 249
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_sqs_queue.jobs",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AWS-SQS-001:aws_sqs_queue.jobs:sqs_managed_sse_enabled is false and no KMS key is set"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "AZ-KV-001",
+          "ruleIndex": 32,
+          "level": "note",
+          "message": {
+            "text": "azurerm_key_vault.main: purge_protection_enabled is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/azure/main.tf"
+                },
+                "region": {
+                  "startLine": 97
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "azurerm_key_vault.main",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "AZ-KV-001:azurerm_key_vault.main:purge_protection_enabled is not true"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        },
+        {
+          "ruleId": "GCP-STORAGE-002",
+          "ruleIndex": 45,
+          "level": "note",
+          "message": {
+            "text": "google_storage_bucket.public_site: uniform_bucket_level_access is not true"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/insecure/gcp/main.tf"
+                },
+                "region": {
+                  "startLine": 15
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "google_storage_bucket.public_site",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "tfcheck/v1": "GCP-STORAGE-002:google_storage_bucket.public_site:uniform_bucket_level_access is not true"
+          },
+          "properties": {
+            "severity": "low",
+            "security-severity": "3.0"
+          }
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ]
+    }
+  ]
+}

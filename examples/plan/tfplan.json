@@ -1,0 +1,323 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.8",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "reports",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "bucket": "acme-prod-reports",
+            "force_destroy": false,
+            "tags": {
+              "Team": "data"
+            }
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "reports",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "block_public_acls": true,
+            "block_public_policy": true,
+            "ignore_public_acls": true,
+            "restrict_public_buckets": false
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "aws_s3_bucket_versioning.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket_versioning",
+          "name": "reports",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "expected_bucket_owner": null,
+            "mfa": null,
+            "versioning_configuration": [
+              {
+                "status": "Enabled"
+              }
+            ]
+          },
+          "sensitive_values": {
+            "versioning_configuration": [
+              {}
+            ]
+          }
+        },
+        {
+          "address": "aws_iam_policy.etl",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "etl",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "name": "etl",
+            "path": "/",
+            "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": \"*\", \"Resource\": \"*\"}]}",
+            "description": null
+          },
+          "sensitive_values": {}
+        }
+      ],
+      "child_modules": [
+        {
+          "address": "module.app",
+          "resources": [
+            {
+              "address": "module.app.aws_security_group.this[0]",
+              "mode": "managed",
+              "type": "aws_security_group",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.terraform.io/hashicorp/aws",
+              "schema_version": 1,
+              "values": {
+                "name": "app-0",
+                "description": "Managed by Terraform",
+                "ingress": [
+                  {
+                    "cidr_blocks": [
+                      "0.0.0.0/0"
+                    ],
+                    "description": "",
+                    "from_port": 3389,
+                    "to_port": 3389,
+                    "protocol": "tcp",
+                    "ipv6_cidr_blocks": [],
+                    "prefix_list_ids": [],
+                    "security_groups": [],
+                    "self": false
+                  }
+                ],
+                "revoke_rules_on_delete": false
+              },
+              "sensitive_values": {}
+            },
+            {
+              "address": "module.app.aws_security_group.this[1]",
+              "mode": "managed",
+              "type": "aws_security_group",
+              "name": "this",
+              "index": 1,
+              "provider_name": "registry.terraform.io/hashicorp/aws",
+              "schema_version": 1,
+              "values": {
+                "name": "app-1",
+                "description": "Managed by Terraform",
+                "ingress": [
+                  {
+                    "cidr_blocks": [
+                      "10.0.0.0/16"
+                    ],
+                    "description": "",
+                    "from_port": 3389,
+                    "to_port": 3389,
+                    "protocol": "tcp",
+                    "ipv6_cidr_blocks": [],
+                    "prefix_list_ids": [],
+                    "security_groups": [],
+                    "self": false
+                  }
+                ],
+                "revoke_rules_on_delete": false
+              },
+              "sensitive_values": {}
+            },
+            {
+              "address": "module.app.aws_instance.web",
+              "mode": "managed",
+              "type": "aws_instance",
+              "name": "web",
+              "provider_name": "registry.terraform.io/hashicorp/aws",
+              "schema_version": 1,
+              "values": {
+                "ami": "ami-0123456789abcdef0",
+                "instance_type": "t3.micro",
+                "metadata_options": [
+                  {
+                    "http_endpoint": "enabled",
+                    "http_tokens": "required",
+                    "http_put_response_hop_limit": 1
+                  }
+                ],
+                "ebs_block_device": []
+              },
+              "sensitive_values": {}
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket_public_access_block.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "reports",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "bucket": true,
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_versioning.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket_versioning",
+      "name": "reports",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "bucket": true,
+          "id": true,
+          "versioning_configuration": [
+            {}
+          ]
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "reports",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "module.app.aws_instance.web",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "web",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {},
+        "after_unknown": {
+          "root_block_device": true,
+          "id": true,
+          "public_ip": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "reports",
+          "expressions": {
+            "bucket": {
+              "constant_value": "acme-prod-reports"
+            }
+          }
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "reports",
+          "expressions": {
+            "bucket": {
+              "references": [
+                "aws_s3_bucket.reports.id",
+                "aws_s3_bucket.reports"
+              ]
+            },
+            "block_public_acls": {
+              "constant_value": true
+            }
+          }
+        },
+        {
+          "address": "aws_s3_bucket_versioning.reports",
+          "mode": "managed",
+          "type": "aws_s3_bucket_versioning",
+          "name": "reports",
+          "expressions": {
+            "bucket": {
+              "references": [
+                "aws_s3_bucket.reports.id",
+                "aws_s3_bucket.reports"
+              ]
+            }
+          }
+        },
+        {
+          "address": "aws_iam_policy.etl",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "etl",
+          "expressions": {
+            "name": {
+              "constant_value": "etl"
+            }
+          }
+        }
+      ],
+      "module_calls": {
+        "app": {
+          "source": "./modules/app",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_security_group.this",
+                "mode": "managed",
+                "type": "aws_security_group",
+                "name": "this",
+                "count_expression": {
+                  "constant_value": 2
+                }
+              },
+              {
+                "address": "aws_instance.web",
+                "mode": "managed",
+                "type": "aws_instance",
+                "name": "web"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

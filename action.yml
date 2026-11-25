@@ -1,0 +1,143 @@
+name: "Terraform Misconfiguration Checker"
+description: "Scan Terraform code and plans for public buckets, open security groups, unencrypted storage, wildcard IAM and more. Annotates PRs and uploads SARIF."
+author: "DaveyD347"
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  path:
+    description: "Directories, .tf files or plan JSON files to scan, one per line or comma-separated."
+    required: false
+    default: "."
+  fail-on:
+    description: "Fail the step when a finding is at or above this severity: low, medium, high, critical, or none."
+    required: false
+    default: "high"
+  skip-rules:
+    description: "Comma-separated rule IDs to skip, e.g. AWS-S3-004,AWS-CT-003."
+    required: false
+    default: ""
+  rules:
+    description: "Comma-separated rule IDs to run. Empty runs every rule."
+    required: false
+    default: ""
+  exclude:
+    description: "Comma-separated glob patterns or directory names to skip, e.g. examples,sandbox."
+    required: false
+    default: ""
+  var-files:
+    description: "Comma-separated .tfvars files to apply (terraform.tfvars and *.auto.tfvars are always read)."
+    required: false
+    default: ""
+  config:
+    description: "Path to a tfcheck.toml config file. Defaults to .tfcheck.toml in the working directory if present."
+    required: false
+    default: ""
+  sarif-file:
+    description: "Where to write SARIF results."
+    required: false
+    default: "tfcheck-results.sarif"
+  upload-sarif:
+    description: "Upload SARIF to GitHub code scanning (needs `security-events: write`)."
+    required: false
+    default: "false"
+  python-version:
+    description: "Python used to run the scanner (3.11+). Empty uses the runner's python3."
+    required: false
+    default: ""
+
+outputs:
+  findings:
+    description: "Number of unsuppressed findings."
+    value: ${{ steps.scan.outputs.findings }}
+  critical:
+    description: "Number of critical findings."
+    value: ${{ steps.scan.outputs.critical }}
+  high:
+    description: "Number of high findings."
+    value: ${{ steps.scan.outputs.high }}
+  medium:
+    description: "Number of medium findings."
+    value: ${{ steps.scan.outputs.medium }}
+  low:
+    description: "Number of low findings."
+    value: ${{ steps.scan.outputs.low }}
+  sarif-file:
+    description: "Path of the SARIF file."
+    value: ${{ inputs.sarif-file }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      if: inputs.python-version != ''
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install tfcheck
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        python3 -m venv "$RUNNER_TEMP/tfcheck-venv"
+        "$RUNNER_TEMP/tfcheck-venv/bin/pip" install --quiet --disable-pip-version-check "$ACTION_PATH"
+
+    - name: Scan Terraform
+      id: scan
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_SKIP: ${{ inputs.skip-rules }}
+        INPUT_RULES: ${{ inputs.rules }}
+        INPUT_EXCLUDE: ${{ inputs.exclude }}
+        INPUT_VAR_FILES: ${{ inputs.var-files }}
+        INPUT_CONFIG: ${{ inputs.config }}
+        INPUT_SARIF: ${{ inputs.sarif-file }}
+      run: |
+        # Inputs arrive through env vars, never interpolated into the script,
+        # so a malicious path or rule list cannot inject shell commands.
+        args=(scan --github --no-color --fail-on "$INPUT_FAIL_ON")
+        [ -n "$INPUT_SKIP" ]   && args+=(--skip "$INPUT_SKIP")
+        [ -n "$INPUT_RULES" ]  && args+=(--only "$INPUT_RULES")
+        [ -n "$INPUT_CONFIG" ] && args+=(--config "$INPUT_CONFIG")
+        [ -n "$INPUT_SARIF" ]  && args+=(--sarif-file "$INPUT_SARIF")
+
+        split() { printf '%s\n' "$1" | tr ',' '\n' | while IFS= read -r item; do
+          item="$(echo "$item" | xargs)"; [ -n "$item" ] && printf '%s\n' "$item"; done; }
+        while IFS= read -r x; do args+=(--exclude "$x"); done < <(split "$INPUT_EXCLUDE")
+        while IFS= read -r x; do args+=(--var-file "$x"); done < <(split "$INPUT_VAR_FILES")
+        paths=()
+        while IFS= read -r x; do paths+=("$x"); done < <(split "$INPUT_PATH")
+        [ ${#paths[@]} -eq 0 ] && paths=(.)
+
+        set +e
+        "$RUNNER_TEMP/tfcheck-venv/bin/tfcheck" "${args[@]}" -- "${paths[@]}"
+        code=$?
+        set -e
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        # Fail later, after the SARIF upload, so results still reach the Security tab.
+        if [ "$code" -eq 2 ]; then
+          echo "::error title=tfcheck::scan error (see log above)"
+        fi
+
+    - name: Upload SARIF to code scanning
+      if: always() && inputs.upload-sarif == 'true' && inputs.sarif-file != ''
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ inputs.sarif-file }}
+        category: tfcheck
+
+    - name: Enforce severity threshold
+      if: always() && steps.scan.outputs.exit-code != '0'
+      shell: bash
+      env:
+        CODE: ${{ steps.scan.outputs.exit-code }}
+        FAIL_ON: ${{ inputs.fail-on }}
+      run: |
+        if [ "$CODE" = "1" ]; then
+          echo "::error title=tfcheck::findings at or above '$FAIL_ON' severity"
+        fi
+        exit 1
